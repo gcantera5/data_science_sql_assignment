@@ -1,0 +1,44 @@
+PART 3
+
+Question 1:
+
+For the query below, explain why the given query might not be the most efficient way to accomplish the task.
+Write out an optimized version of the query. Explain what steps you took to optimize it and why your version
+would be more efficient.
+
+Optimzed Version:
+SELECT student_athletes.ID, student_athletes.name
+FROM school_athletes AS student_athletes
+JOIN (
+  SELECT 
+    division, AVG(performance_score) AS avgerage
+  FROM 
+    school_athletes
+  GROUP BY 
+    division
+    ) AS tb1 ON student_athletes.division = tb1.division
+WHERE student_athletes.school = 'Brown' and student_athletes.performance_score > tb1.avgerage;
+
+In the original SQL query, the two WHERE operations in the code led to an extremely complicated and long runtime
+To optimize the query, I created a subquery called student_athletes that was responsible for finding the average 
+performances of the divisions. Then, I joined this subquery to the school_athletes table where one could easily 
+run an analysis that compares a student's performance score and the average performance score of that division.
+By doing this, I was able to optimize the query and reduce runtime.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Question 2:
+
+Consider two tables. Table A is very long with 1 billion rows and 5 columns. Table B is very wide with 1000
+rows and 10,000 columns. If we were to join the two tables and want to make sure the join is performant, 
+how should we best filter the tables? Assume that we can select from each table and then join the results.
+Specifically, state the table in which we should use WHERE heavily and the table in which we should be careful
+about what values we use in our SELECT.
+
+I think that we should heavily use WHERE for Table A. Since Table A has significantly more rows thatn Table B,
+it is easier to delete rows of data that do not meet the conditions of our cutoffs. In this case, we could make
+sure that the max number of rows for Table A is equal to the number of rows in Table B.
+
+As for Table B, we have to be extremely careful in using SELECT. Since Table B is more wide, we know that we have
+more attributes to select from. What we decide to select will impact the results of our joined tables and will
+dictate the information we chose to display to our readers. 
